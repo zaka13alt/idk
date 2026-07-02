@@ -1,0 +1,45 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>v86 working</title>
+  <style>
+    body { margin: 0; background: black; }
+    #screen_container { width: 100vw; height: 100vh; }
+    canvas { width: 100%; height: 100%; }
+  </style>
+</head>
+
+<body>
+  <div id="screen_container"></div>
+
+  <script src="https://proxy.2677929.xyz/https://copy.sh/v86/build/libv86.js"></script>
+
+  <script>
+    window.onload = function () {
+      window.emulator = new V86({
+        wasm_path: "https://proxy.2677929.xyz/https://copy.sh/v86/build/v86.wasm",
+
+        memory_size: 128 * 1024 * 1024,
+        vga_memory_size: 8 * 1024 * 1024,
+
+        screen_container: document.getElementById("screen_container"),
+
+        bios: {
+          url: "https://proxy.2677929.xyz/https://copy.sh/v86/bios/seabios.bin"
+        },
+
+        vga_bios: {
+          url: "https://proxy.2677929.xyz/https://copy.sh/v86/bios/vgabios.bin"
+        },
+
+        cdrom: {
+          url: "https://proxy.2677929.xyz/https://copy.sh/v86/images/linux.iso"
+        },
+
+        autostart: true
+      });
+    };
+  </script>
+</body>
+</html>
