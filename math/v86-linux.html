@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v86 Emulator</title>
+
+<style>
+html, body {
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+    background: #111;
+    font-family: Arial, sans-serif;
+}
+
+#toolbar {
+    position: fixed;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+}
+
+#lockMouse {
+    padding: 8px 16px;
+    font-size: 14px;
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    background: #2196F3;
+    color: white;
+}
+
+#lockMouse:hover {
+    background: #1976D2;
+}
+
+#screen_container {
+    width: 100vw;
+    height: 100vh;
+}
+
+canvas {
+    display: block;
+    max-width: 100%;
+    max-height: 100%;
+}
+</style>
+</head>
+<body>
+
+<div id="toolbar">
+    <button id="lockMouse">🔒 Lock Mouse</button>
+</div>
+
+<div id="screen_container"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/v86/build/libv86.js"></script>
+
+<script>
+const emulator = new V86({
+    wasm_path: "https://cdn.jsdelivr.net/npm/v86/build/v86.wasm",
+
+    screen_container: document.getElementById("screen_container"),
+
+    memory_size: 128 * 1024 * 1024,
+    vga_memory_size: 8 * 1024 * 1024,
+
+    bios: {
+        url: "https://cdn.jsdelivr.net/gh/zaka13alt/idk@HEAD/math/v86/seabios.bin"
+    },
+
+    vga_bios: {
+        url: "https://cdn.jsdelivr.net/gh/zaka13alt/idk@HEAD/math/v86/vgabios.bin"
+    },
+
+    cdrom: {
+        url: "https://proxy.2677929.xyz/https://distro.ibiblio.org/tinycorelinux/17.x/x86/release/TinyCore-current.iso"
+    },
+
+    network_relay_url: "wss://relay.widgetry.org/",
+
+    boot_order: 0x132,
+    autostart: true
+});
+
+// Lock the mouse pointer into the emulator.
+document.getElementById("lockMouse").addEventListener("click", () => {
+    const canvas = document.querySelector("#screen_container canvas");
+
+    if (!canvas) {
+        alert("The emulator isn't ready yet. Wait for it to finish loading.");
+        return;
+    }
+
+    if (canvas.requestPointerLock) {
+        canvas.requestPointerLock();
+    }
+});
+
+document.addEventListener("pointerlockchange", () => {
+    const btn = document.getElementById("lockMouse");
+
+    if (document.pointerLockElement) {
+        btn.textContent = "🔓 Mouse Locked (Press Esc to release)";
+    } else {
+        btn.textContent = "🔒 Lock Mouse";
+    }
+});
+</script>
+
+</body>
+</html>
